@@ -4,10 +4,9 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import GithubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-
 import prisma from "@/app/libs/prismadb";
 
-export const authOptions: AuthOptions = {
+const getAuthOptions = (): AuthOptions => ({
   adapter: PrismaAdapter(prisma),
   providers: [
     GithubProvider({
@@ -57,8 +56,8 @@ export const authOptions: AuthOptions = {
     strategy: "jwt",
   },
   secret: process.env.NEXTAUTH_SECRET,
-};
+});
 
-const handler = NextAuth(authOptions);
+const handler = NextAuth(getAuthOptions());
 
 export { handler as GET, handler as POST };
