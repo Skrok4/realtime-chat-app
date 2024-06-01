@@ -56,20 +56,9 @@ const AuthForm = () => {
     if (variant === "REGISTER") {
       axios
         .post("/api/register", data)
-        .then(() =>
-          signIn("credentials", {
-            ...data,
-            redirect: false,
-          })
-        )
-        .then((callback) => {
-          if (callback?.error) {
-            toast.error("Invalid credentials!");
-          }
-
-          if (callback?.ok) {
-            router.push("/conversations");
-          }
+        .then(() => {
+          toast.success("Registration successful!");
+          signIn("credentials", data);
         })
         .catch(() => toast.error("Something went wrong!"))
         .finally(() => setIsLoading(false));
@@ -82,13 +71,15 @@ const AuthForm = () => {
       })
         .then((callback) => {
           if (callback?.error) {
-            toast.error("Invalid credentials!");
+            toast.error("Invalid credentials");
           }
 
-          if (callback?.ok) {
-            router.push("/conversations");
+          if (callback?.ok && !callback?.error) {
+            toast.success("Logged in!");
+            router.push("/users");
           }
         })
+        .catch(() => toast.error("Login failed!"))
         .finally(() => setIsLoading(false));
     }
   };
@@ -99,16 +90,76 @@ const AuthForm = () => {
     signIn(action, { redirect: false })
       .then((callback) => {
         if (callback?.error) {
-          toast.error("Invalid credentials!");
+          toast.error("Invalid Credentials");
         }
 
         if (callback?.ok && !callback?.error) {
-          toast.success("Logged in");
-          router.push("/conversations");
+          toast.success("Logged in!");
         }
       })
+      .catch(() => toast.error("Social login failed!"))
       .finally(() => setIsLoading(false));
   };
+
+  // const onSubmit: SubmitHandler<FieldValues> = (data) => {
+  //   setIsLoading(true);
+
+  //   if (variant === "REGISTER") {
+  //     axios
+  //       .post("/api/register", data)
+  //       .then(() =>
+  //         signIn("credentials", {
+  //           data,
+  //         })
+  //       )
+  //       .then((callback) => {
+  //         if (callback?.error) {
+  //           toast.error("Invalid credentials!");
+  //         }
+
+  //         if (callback?.ok) {
+  //           router.push("/conversations");
+  //         }
+  //       })
+  //       .catch(() => toast.error("Something went wrong!"))
+  //       .finally(() => setIsLoading(false));
+  //   }
+
+  //   if (variant === "LOGIN") {
+  //     signIn("credentials", {
+  //       ...data,
+  //       redirect: false,
+  //     })
+  //       .then((callback) => {
+  //         if (callback?.error) {
+  //           toast.error("Invalid credentials!");
+  //         }
+
+  //         if (callback?.ok) {
+  //           toast.success("Logged in!");
+  //           router.push("/conversations");
+  //         }
+  //       })
+  //       .finally(() => setIsLoading(false));
+  //   }
+  // };
+
+  // const socialAction = (action: string) => {
+  //   setIsLoading(true);
+
+  //   signIn(action, { redirect: false })
+  //     .then((callback) => {
+  //       if (callback?.error) {
+  //         toast.error("Invalid credentials!");
+  //       }
+
+  //       if (callback?.ok && !callback?.error) {
+  //         toast.success("Logged in");
+  //         router.push("/conversations");
+  //       }
+  //     })
+  //     .finally(() => setIsLoading(false));
+  // };
 
   return (
     <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
